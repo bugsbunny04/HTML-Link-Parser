@@ -15,6 +15,6 @@ func main() {
 	}
 
 	links, err := link.Parser(f)
-	fmt.Println(links)
+	fmt.Printf("%+v",links)
 
 }

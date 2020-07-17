@@ -1,7 +1,6 @@
 package linkparser
 
 import (
-	"fmt"
 	"io"
 	"golang.org/x/net/html"
 )
@@ -18,10 +17,22 @@ func Parser(r io.Reader) ([]Link, error) {
 		panic(err)
 	}
 	nodes := linknodes(doc)
+	var links []Link
 	for _, node := range nodes {
-		fmt.Println(node)
+		links = append(links, buildLink(node))
 	}
-	return nil,nil
+	return links,nil
+}
+
+func buildLink(n *html.Node) Link {
+	var ret Link
+	for _,attr := range n.Attr {
+		if attr.Key == "href" {
+			ret.Href = attr.Val
+		}
+	}
+	ret.Text = "Later"
+	return ret
 }
 
 func linknodes(n *html.Node) []*html.Node {
@@ -33,17 +44,6 @@ func linknodes(n *html.Node) []*html.Node {
 		ret = append(ret , linknodes(c)...)
 	}
 	return ret
-}
-
-func dfs(n *html.Node,padding string) {
-	msg := n.Data
-	if n.Type == html.ElementNode {
-		msg = "<"+msg+">"
-	}
-	fmt.Println(padding,msg)
-	for c:=n.FirstChild;c!=nil;c=c.NextSibling {
-		dfs(c,padding+" ")
-	}
 }
 
 
