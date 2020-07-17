@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	filename := flag.String("f", "ex1.html", "File that contains the HTML to be parsed")
+	filename := flag.String("file", "ex1.html", "File that contains the HTML to be parsed")
 	flag.Parse()
 	f, err := os.Open(*filename)
 	if err != nil {

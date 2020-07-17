@@ -3,6 +3,7 @@ package linkparser
 import (
 	"io"
 	"golang.org/x/net/html"
+	"strings"
 )
 
 
@@ -31,9 +32,25 @@ func buildLink(n *html.Node) Link {
 			ret.Href = attr.Val
 		}
 	}
-	ret.Text = "Later"
+	ret.Text = text(n)
 	return ret
 }
+
+func text(n *html.Node) string {
+	if n.Type == html.TextNode {
+		return n.Data
+	}
+	if n.Type != html.ElementNode {
+		return ""
+	}
+	var ret string
+	for c:=n.FirstChild;c!=nil;c=c.NextSibling {
+		ret += text(c)
+	}
+	return strings.Join(strings.Fields(ret)," ")
+}
+
+
 
 func linknodes(n *html.Node) []*html.Node {
 	if n.Type==html.ElementNode && n.Data=="a" {
